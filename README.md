@@ -20,7 +20,9 @@
 6. 绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
 7. 点击`Quick Edit`，复制[这个文件](./worker.js)到编辑器中
 8. 通过打开`https://xxx.workers.dev/registerWebhook`来注册websoket
-```registerWebhook```
+```
+registerWebhook
+```
 
 ## 使用方法
 - 当其他用户给bot发消息，会被转发到bot创建者
