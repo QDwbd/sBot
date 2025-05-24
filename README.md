@@ -48,24 +48,19 @@ Telegram Bot 使用教程
 
 自动创建群组讨论话题管理用户私聊
 
-快速开始
-###### 1. 环境准备
-你需要有一个 Telegram Bot Token，可以通过 BotFather 获取。
+##  快速开始
+1. 从[@BotFather](https://t.me/BotFather)获取token，并且可以发送`/setjoingroups`来禁止此Bot被添加到群组
+2. 从[uuidgenerator](https://www.uuidgenerator.net/)获取一个随机uuid作为secret
+3. 从[@username_to_id_bot](https://t.me/username_to_id_bot)获取你的用户id
+4. 登录[cloudflare](https://workers.cloudflare.com/)，创建一个worker
+5. 配置worker的变量
+    - 增加一个`ENV_BOT_TOKEN`变量，数值为获得的token
+    - 增加一个`ENV_BOT_SECRET`变量，数值为获得的secret
+    - 增加一个`ENV_ADMIN_UID`变量，数值为你的用户id
+    - 增加一个`ENV_GROUP_CHAT_ID	`变量，你的机器人会在此群组创建话题和转发消息，Telegram群组ID一般为负数
+6. 在cf的worker绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
 
-创建一个话题群组（Topics）的 Telegram 群组，并将你的机器人加入群组设为管理。
-
-准备好管理员的 Telegram 用户 ID 和群组 ID。【请不要开启匿名管理】{别在github开翻译.....}
-
-###### 2. 配置环境变量
-请设置以下环境变量：
-
-变量名	说明
-ENV_BOT_TOKEN	你的 Telegram 机器人 Token
-ENV_BOT_SECRET	Webhook 访问密钥，用于安全验证
-ENV_ADMIN_UID	管理员 Telegram 用户 ID（数字）
-ENV_GROUP_CHAT_ID	机器人管理的 Telegram 群组 ID（数字）
-
-###### 3. 部署机器人
+##  部署机器人
 将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。复制[这个文件](./newbot.js)到编辑器中
 
 设置 Webhook 地址，例如 https://your.domain.com/endpoint，并确保 Telegram Bot API 使用你的 ENV_BOT_SECRET 作为 secret_token。
@@ -75,7 +70,7 @@ ENV_GROUP_CHAT_ID	机器人管理的 Telegram 群组 ID（数字）
 https://api.telegram.org/bot<你的BOT_TOKEN>/setWebhook?url=https://your.domain.com/endpoint&secret_token=<你的BOT_SECRET>
 ```
 
-###### 4. 运行效果
+##  运行效果
 用户私聊机器人发送消息，机器人自动转发到群组对应的话题
 
-管理员在群组回复消息，机器人会把回复私聊回对应用户
+管理员在话题回复或发消息，机器人会转发给私聊对应用户
