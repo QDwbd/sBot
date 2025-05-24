@@ -52,7 +52,7 @@ Telegram Bot 使用教程
 ###### 1. 环境准备
 你需要有一个 Telegram Bot Token，可以通过 BotFather 获取。
 
-需要一个支持群组论坛（Topics）的 Telegram 群组，并将你的机器人加入群组。
+创建一个话题群组（Topics）的 Telegram 群组，并将你的机器人加入群组设为管理。
 
 准备好管理员的 Telegram 用户 ID 和群组 ID。【请不要开启匿名管理】{别在github开翻译.....}
 
