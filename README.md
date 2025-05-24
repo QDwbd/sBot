@@ -12,14 +12,15 @@
 1. 从[@BotFather](https://t.me/BotFather)获取token，并且可以发送`/setjoingroups`来禁止此Bot被添加到群组
 2. 从[uuidgenerator](https://www.uuidgenerator.net/)获取一个随机uuid作为secret
 3. 从[@username_to_id_bot](https://t.me/username_to_id_bot)获取你的用户id
-4. 登录[cloudflare](https://workers.cloudflare.com/)，创建一个worker
-5. 配置worker的变量
+4. 创建一个群组并改为话题模式.从[@nmnmfunbot](https://t.me/nmnmfunbot)自己获取自己群id
+5. 登录[cloudflare](https://workers.cloudflare.com/)，创建一个worker
+6. 配置worker的变量
     - 增加一个`ENV_BOT_TOKEN`变量，数值为从步骤1中获得的token
     - 增加一个`ENV_BOT_SECRET`变量，数值为从步骤2中获得的secret
     - 增加一个`ENV_ADMIN_UID`变量，数值为从步骤3中获得的用户id
-6. 绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
-7. 点击`Quick Edit`，复制[这个文件](./worker.js)到编辑器中
-8. 通过打开`https://xxx.workers.dev/registerWebhook`来注册websoket
+7. 绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
+8. 点击`Quick Edit`，复制[这个文件](./worker.js)到编辑器中
+9. 通过打开`https://xxx.workers.dev/registerWebhook`来注册websoket
 ```
 registerWebhook
 ```
