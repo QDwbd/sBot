@@ -66,7 +66,7 @@ ENV_ADMIN_UID	管理员 Telegram 用户 ID（数字）
 ENV_GROUP_CHAT_ID	机器人管理的 Telegram 群组 ID（数字）
 
 ###### 3. 部署机器人
-将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。
+将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。复制[这个文件](./newbot.js)到编辑器中
 
 设置 Webhook 地址，例如 https://your.domain.com/endpoint，并确保 Telegram Bot API 使用你的 ENV_BOT_SECRET 作为 secret_token。
 
