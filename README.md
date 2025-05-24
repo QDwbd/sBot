@@ -28,3 +28,53 @@ registerWebhook
 - 当其他用户给bot发消息，会被转发到bot创建者
 - 用户回复普通文字给转发的消息时，会回复到原消息发送者
 - 用户回复`/block`, `/unblock`, `/checkblock`等命令会执行相关指令，******不会******回复到原消息发送者
+
+
+
+
+
+###### newbot
+Telegram Bot 使用教程
+这是一个基于 Telegram Bot API 的消息转发机器人，实现了用户私聊消息转发到群组话题，并支持管理员回复私聊。
+
+功能简介
+支持 /start 命令，回复欢迎消息
+
+私聊用户发送消息，自动转发到指定群组的讨论话题
+
+管理员在群组回复消息，机器人将回复内容私聊回用户
+
+支持关键词回复，如“配置文件”或“aimi配置”
+
+自动创建群组讨论话题管理用户私聊
+
+快速开始
+###### 1. 环境准备
+你需要有一个 Telegram Bot Token，可以通过 BotFather 获取。
+
+需要一个支持群组论坛（Topics）的 Telegram 群组，并将你的机器人加入群组。
+
+准备好管理员的 Telegram 用户 ID 和群组 ID。【请不要开启匿名管理】
+
+###### 2. 配置环境变量
+请设置以下环境变量：
+
+变量名	说明
+ENV_BOT_TOKEN	你的 Telegram 机器人 Token
+ENV_BOT_SECRET	Webhook 访问密钥，用于安全验证
+ENV_ADMIN_UID	管理员 Telegram 用户 ID（数字）
+ENV_GROUP_CHAT_ID	机器人管理的 Telegram 群组 ID（数字）
+
+###### 3. 部署机器人
+将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。
+
+设置 Webhook 地址，例如 https://your.domain.com/endpoint，并确保 Telegram Bot API 使用你的 ENV_BOT_SECRET 作为 secret_token。
+
+示例设置 Webhook：
+```
+https://api.telegram.org/bot<你的BOT_TOKEN>/setWebhook?url=https://your.domain.com/endpoint&secret_token=<你的BOT_SECRET>
+```
+
+###### 4. 运行效果
+用户私聊机器人发送消息，机器人自动转发到群组对应的话题。
+管理员在群组回复消息，机器人会把回复私聊回对应用户
