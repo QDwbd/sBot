@@ -49,7 +49,7 @@ Telegram Bot 使用教程
 
 自动创建群组讨论话题管理用户私聊
 
-话题回复/ban  或者  /unban可封或解封用户
+话题回复  ```/ban```  或者  ```/unban```  可封或解封用户
 
 ##  快速开始
 1. 从[@BotFather](https://t.me/BotFather)获取token
