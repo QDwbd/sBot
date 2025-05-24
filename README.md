@@ -33,7 +33,7 @@ registerWebhook
 
 
 
-###### newbot
+#### 新机器人（群组话题单对单）
 Telegram Bot 使用教程
 这是一个基于 Telegram Bot API 的消息转发机器人，实现了用户私聊消息转发到群组话题，并支持管理员回复私聊。
 
