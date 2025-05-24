@@ -49,7 +49,7 @@ Telegram Bot 使用教程
 自动创建群组讨论话题管理用户私聊
 
 ##  快速开始
-1. 从[@BotFather](https://t.me/BotFather)获取token，并且可以发送`/setjoingroups`来禁止此Bot被添加到群组
+1. 从[@BotFather](https://t.me/BotFather)获取token
 2. 从[uuidgenerator](https://www.uuidgenerator.net/)获取一个随机uuid作为secret
 3. 从[@username_to_id_bot](https://t.me/username_to_id_bot)获取你的用户id
 4. 登录[cloudflare](https://workers.cloudflare.com/)，创建一个worker
