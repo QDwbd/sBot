@@ -55,7 +55,7 @@ Telegram Bot 使用教程
 1. 从[@BotFather](https://t.me/BotFather)获取token
 2. 从[uuidgenerator](https://www.uuidgenerator.net/)获取一个随机uuid作为secret
 3. 从[@username_to_id_bot](https://t.me/username_to_id_bot)获取你的用户id
-4. 创建一个群并改为话题模式.从[@nmnmfunbot](https://t.me/nmnmfunbot)获取你的群id
+4. 创建一个群并改为话题模式.从[@nmnmfunbot](https://t.me/nmnmfunbot)获取你的群id.管理员账号不能设为匿名管理！！！！！！
 5. 登录[cloudflare](https://workers.cloudflare.com/)，创建一个worker
 6. 配置worker的变量
     - 增加一个`ENV_BOT_TOKEN`变量，数值为获得的token
@@ -64,7 +64,10 @@ Telegram Bot 使用教程
     - 增加一个`ENV_GROUP_CHAT_ID`变量，你的机器人会在此群组创建话题和转发消息，Telegram群组ID一般为负数
 7. 在cf的worker绑定kv数据库，先创建一个Namespace Name为`sBot`的kv数据库，在worker的setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
 
+##  管理员账号不能设为匿名管理！！！！！！
+
 ##  部署机器人
+
 将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。复制[这个文件](./newbot.js)到编辑器中
 
 设置 Webhook 地址，例如 https://your.domain.com/endpoint，并确保 Telegram Bot API 使用你的 ENV_BOT_SECRET 作为 secret_token。
