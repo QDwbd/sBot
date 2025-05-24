@@ -62,7 +62,7 @@ Telegram Bot 使用教程
     - 增加一个`ENV_BOT_SECRET`变量，数值为获得的secret
     - 增加一个`ENV_ADMIN_UID`变量，数值为你的用户id
     - 增加一个`ENV_GROUP_CHAT_ID`变量，你的机器人会在此群组创建话题和转发消息，Telegram群组ID一般为负数
-7. 在cf的worker绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
+7. 在cf的worker绑定kv数据库，先创建一个Namespace Name为`sBot`的kv数据库，在worker的setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
 
 ##  部署机器人
 将项目部署到支持 fetch 事件监听的环境，如 Cloudflare Workers。复制[这个文件](./newbot.js)到编辑器中
