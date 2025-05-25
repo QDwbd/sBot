@@ -3,9 +3,7 @@ const WEBHOOK = '/endpoint';
 const SECRET = ENV_BOT_SECRET;
 const ADMIN_UID = Number(ENV_ADMIN_UID);
 const GROUP_CHAT_ID = Number(ENV_GROUP_CHAT_ID);
-
 const startMsgUrl = 'https://raw.githubusercontent.com/QDwbd/sBot/main/data/startMessage.md';
-
 function apiUrl(methodName, params = null) {
   let query = '';
   if (params) {
@@ -13,35 +11,27 @@ function apiUrl(methodName, params = null) {
   }
   return `https://api.telegram.org/bot${TOKEN}/${methodName}${query}`;
 }
-
 function requestTelegram(methodName, body, params = null) {
   return fetch(apiUrl(methodName, params), body).then(r => r.json());
 }
-
 function makeReqBody(body) {
   return { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) };
 }
-
 function sendMessage(msg = {}) {
   return requestTelegram('sendMessage', makeReqBody(msg));
 }
-
 function copyMessage(msg = {}) {
   return requestTelegram('copyMessage', makeReqBody(msg));
 }
-
 function forwardMessage(msg = {}) {
   return requestTelegram('forwardMessage', makeReqBody(msg));
 }
-
 function createForumTopic(chat_id, name) {
   return requestTelegram('createForumTopic', makeReqBody({ chat_id, name }));
 }
-
 function deleteMessage(msg = {}) {
   return requestTelegram('deleteMessage', makeReqBody(msg));
 }
-
 addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.pathname === WEBHOOK) {
@@ -50,7 +40,6 @@ addEventListener('fetch', event => {
     event.respondWith(new Response('No handler for this request'));
   }
 });
-
 async function handleWebhook(event) {
   if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== SECRET) {
     return new Response('Unauthorized', { status: 403 });
@@ -59,16 +48,13 @@ async function handleWebhook(event) {
   event.waitUntil(onUpdate(update));
   return new Response('Ok');
 }
-
 async function onUpdate(update) {
   if (update.message) {
     await onMessage(update.message);
   }
 }
-
 async function onMessage(message) {
   const userId = message.from.id;
-
   if (
     message.chat.id === GROUP_CHAT_ID &&
     message.message_thread_id &&
@@ -105,7 +91,6 @@ async function onMessage(message) {
       return;
     }
   }
-
   const isBlacklisted = await sBot.get(`blacklist-${userId}`, { type: 'json' });
   if (isBlacklisted) {
     await sendMessage({
@@ -114,11 +99,9 @@ async function onMessage(message) {
     });
     return;
   }
-
   if (message.text === '/start') {
     return await handleStartCommand(message);
   }
-
   if (message.text && /配置文件|aimi配置/i.test(message.text)) {
     return sendMessage({
       chat_id: message.chat.id,
@@ -126,7 +109,6 @@ async function onMessage(message) {
       parse_mode: 'Markdown',
     });
   }
-
   if (message.chat.type === 'private') {
     await handlePrivateMessage(message);
   } else if (message.chat.id === GROUP_CHAT_ID) {
@@ -135,14 +117,12 @@ async function onMessage(message) {
     }
   }
 }
-
 async function handleStartCommand(message) {
   const userId = message.from.id;
   let username = (message.from.first_name && message.from.last_name)
     ? message.from.first_name + " " + message.from.last_name
     : message.from.first_name || "未知";
   let user = message.from.username || "";
-
   let startMsg;
   try {
     const response = await fetch(startMsgUrl);
@@ -152,14 +132,11 @@ async function handleStartCommand(message) {
     console.error('Error fetching start message:', error);
     startMsg = 'An error occurred while fetching the start message.';
   }
-
   startMsg = startMsg.replace(/{{username}}/g, username)
                      .replace(/{{user_id}}/g, userId)
                      .replace(/{{user}}/g, user);
-
   try {
     let topicId = await sBot.get(`topic-for-${userId}`, { type: 'json' });
-
     if (!topicId || !(await isTopicValid(topicId))) {
       const createRes = await createForumTopic(GROUP_CHAT_ID, username);
       if (createRes.ok) {
@@ -175,13 +152,11 @@ async function handleStartCommand(message) {
   } catch (err) {
     console.error('创建或验证话题失败:', err);
   }
-
   let keyboard = {
     inline_keyboard: [
       [{ text: 'AiMi的github', url: 'https://github.com/QDwbd' }]
     ]
   };
-
   return sendMessage({
     chat_id: message.chat.id,
     text: startMsg,
@@ -189,14 +164,10 @@ async function handleStartCommand(message) {
     reply_markup: keyboard,
   });
 }
-
 async function handlePrivateMessage(message) {
   const userId = message.from.id;
-  const userName = message.from.username || `${message.from.first_name || ''}${message.from.last_name || ''}` || userId.toString();
-
   try {
     let topicId = await sBot.get(`topic-for-${userId}`, { type: 'json' });
-
     if (!topicId) {
       await sendMessage({
         chat_id: userId,
@@ -204,26 +175,21 @@ async function handlePrivateMessage(message) {
       });
       return;
     }
-
     await sBot.put(`topic-to-user-${topicId}`, userId);
-
     const forwardRes = await forwardMessage({
       chat_id: GROUP_CHAT_ID,
       message_thread_id: topicId,
       from_chat_id: userId,
       message_id: message.message_id,
     });
-
     if (forwardRes.ok) {
       await sBot.put(`msg-map-${forwardRes.result.message_id}`, userId);
     }
-
   } catch (err) {
     console.error('转发消息失败:', err);
     await sendMessage({ chat_id: userId, text: '机器人内部错误，稍后再试。' });
   }
 }
-
 async function isTopicValid(topicId) {
   try {
     const res = await requestTelegram('sendMessage', makeReqBody({
@@ -240,14 +206,11 @@ async function isTopicValid(topicId) {
     return false;
   }
 }
-
 async function handleAdminMessageInTopic(message) {
   const topicId = message.message_thread_id;
   if (!topicId) return;
-
   const userId = await sBot.get(`topic-to-user-${topicId}`, { type: 'json' });
   if (!userId) return;
-
   await copyMessage({
     chat_id: userId,
     from_chat_id: GROUP_CHAT_ID,
