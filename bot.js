@@ -1,17 +1,17 @@
-const TOKEN = ENV_BOT_TOKEN; // 获取环境变量中的 Bot Token
-const WEBHOOK = '/endpoint'; // 定义 webhook 路径
-const SECRET = ENV_BOT_SECRET; // 获取环境变量中的 Secret Token
-const ADMIN_UID = ENV_ADMIN_UID; // 获取管理员用户的 UID
-const NOTIFY_INTERVAL = 12 * 3600 * 1000; // 设置通知的间隔时间（12小时）
-const notificationUrl = 'https://raw.githubusercontent.com/QDwbd/sBot/main/data/notification.txt'; // 设置通知消息的 URL
-const startMsgUrl = 'https://raw.githubusercontent.com/QDwbd/sBot/main/data/startMessage.md'; // 设置启动消息的 URL
-const enable_notification = true; // 启用通知功能
-function apiUrl(methodName, params = null) { // 创建 Telegram API 请求 URL
-  let query = ''; // 初始化查询字符串
-  if (params) { // 如果有参数
-    query = '?' + new URLSearchParams(params).toString(); // 将参数转换为 URL 查询字符串
+const TOKEN = ENV_BOT_TOKEN; // 获取环境变量中的 Telegram 机器人 Token，用于认证和调用 Telegram API
+const WEBHOOK = '/endpoint'; // 定义 Webhook 的路径，当 Telegram 服务器发送消息时会访问该路径
+const SECRET = ENV_BOT_SECRET; // 获取环境变量中的 Secret Token，用于验证 Webhook 请求是否来自 Telegram
+const ADMIN_UID = ENV_ADMIN_UID; // 获取管理员用户的唯一 ID，用于识别管理员
+const NOTIFY_INTERVAL = 12 * 3600 * 1000; // 设置通知的时间间隔为 12 小时，单位是毫秒
+const notificationUrl = 'https://raw.githubusercontent.com/QDwbd/sBot/main/data/notification.txt'; // 通知消息的 URL
+const startMsgUrl = 'https://raw.githubusercontent.com/QDwbd/sBot/main/data/startMessage.md'; // 启动消息的 URL
+const enable_notification = true; // 设置是否启用通知功能，true 为启用
+function apiUrl(methodName, params = null) { // 构造请求 Telegram API 的 URL
+  let query = ''; // 初始化查询字符串为空
+  if (params) { // 如果有传递参数
+    query = '?' + new URLSearchParams(params).toString(); // 将对象转换为查询字符串
   }
-  return `https://api.telegram.org/bot${TOKEN}/${methodName}${query}`; // 返回完整的 API URL
+  return `https://api.telegram.org/bot${TOKEN}/${methodName}${query}`; // 构造完整的 API 请求 URL
 }
 function requestTelegram(methodName, body, params = null) { // 向 Telegram API 发送请求
   return fetch(apiUrl(methodName, params), body) // 调用 apiUrl 函数，构建请求 URL
@@ -36,57 +36,57 @@ addEventListener('fetch', event => { // 监听 fetch 事件
   const url = new URL(event.request.url); // 创建 URL 对象
   if (url.pathname === WEBHOOK) { // 如果路径是 /endpoint
     event.respondWith(handleWebhook(event)); // 处理 webhook 请求
-  } else if (url.pathname === '/registerWebhook') { // 如果路径是 /registerWebhook
-    event.respondWith(registerWebhook(event, url, WEBHOOK, SECRET)); // 注册 webhook
-  } else if (url.pathname === '/unRegisterWebhook') { // 如果路径是 /unRegisterWebhook
-    event.respondWith(unRegisterWebhook(event)); // 取消注册 webhook
+  } else if (url.pathname === '/registerWebhook') { // 如果路径是注册 Webhook
+    event.respondWith(registerWebhook(event, url, WEBHOOK, SECRET)); // 注册 Webhook
+  } else if (url.pathname === '/unRegisterWebhook') { // 如果路径是取消注册 Webhook
+    event.respondWith(unRegisterWebhook(event)); // 取消注册 Webhook
   } else {
     event.respondWith(new Response('No handler for this request')); // 返回默认响应
   }
 });
-async function handleWebhook(event) { // 处理 webhook 请求
-  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== SECRET) { // 检查请求的 Secret Token
-    return new Response('Unauthorized', { status: 403 }); // 如果 Secret Token 不匹配，返回 403 错误
+async function handleWebhook(event) { // 处理 Webhook 请求
+  if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== SECRET) { // 验证请求中的 Secret Token
+    return new Response('Unauthorized', { status: 403 }); // 如果 Secret Token 不匹配，返回 403 Unauthorized 错误
   }
-  const update = await event.request.json(); // 解析请求的 JSON 数据
-  event.waitUntil(onUpdate(update)); // 异步处理 update
-  return new Response('Ok'); // 返回成功响应
+  const update = await event.request.json(); // 解析 Webhook 请求中的 JSON 数据
+  event.waitUntil(onUpdate(update)); // 异步处理更新数据
+  return new Response('Ok'); // 返回 'Ok' 响应
 }
-async function onUpdate(update) { // 处理 update 数据
+async function onUpdate(update) { // 处理更新的数据
   if ('message' in update) { // 如果 update 中有 message 字段
-    await onMessage(update.message); // 处理消息
+    await onMessage(update.message); // 调用 onMessage 函数处理消息
   }
 }
 async function onMessage(message) { // 处理消息
-  if (message.text === '/start') { // 如果消息内容是 /start
+  if (message.text === '/start') { // 如果消息文本是 /start
     const userId = message.from.id; // 获取用户 ID
     let username = message.from.first_name && message.from.last_name
       ? message.from.first_name + " " + message.from.last_name // 获取用户的姓名
-      : message.from.first_name || "未知"; // 如果没有姓氏，默认“未知”
-    let user = message.from.username; // 获取用户的用户名
-    let startMsg; // 定义启动消息
+      : message.from.first_name || "未知"; // 如果没有姓氏，默认值为“未知”
+    let user = message.from.username; // 获取用户的 Telegram 用户名
+    let startMsg; // 定义启动消息变量
     try {
       const response = await fetch(startMsgUrl); // 尝试从 startMsgUrl 获取启动消息
-      if (!response.ok) throw new Error('Failed to fetch start message'); // 如果响应不成功，抛出错误
-      startMsg = await response.text(); // 获取启动消息的内容
+      if (!response.ok) throw new Error('Failed to fetch start message'); // 如果响应失败，抛出错误
+      startMsg = await response.text(); // 获取启动消息内容
     } catch (error) { // 如果获取启动消息失败
       console.error('Error fetching start message:', error); // 打印错误日志
       startMsg = 'An error occurred while fetching the start message.'; // 设置默认错误消息
     }
-    startMsg = startMsg.replace(/{{username}}/g, `\`` + username + `\``) // 替换模板中的 {{username}}
-                       .replace(/{{user_id}}/g, `\`` + userId + `\``) // 替换模板中的 {{user_id}}
-                       .replace(/{{user}}/g, user); // 替换模板中的 {{user}}
+    startMsg = startMsg.replace(/{{username}}/g, `\`` + username + `\``) // 替换启动消息中的 {{username}} 占位符
+                       .replace(/{{user_id}}/g, `\`` + userId + `\``) // 替换 {{user_id}} 占位符
+                       .replace(/{{user}}/g, user); // 替换 {{user}} 占位符
     let keyboard = { // 设置按钮键盘
       inline_keyboard: [
         [
-          { text: 'AiMi的github', url: 'https://github.com/QDwbd' } // 按钮内容和链接
+          { text: 'AiMi的github', url: 'https://github.com/QDwbd' } // 设置按钮文本和链接
         ]
       ]
     };
     return sendMessage({ // 发送启动消息
       chat_id: message.chat.id, // 设置聊天 ID
-      text: startMsg, // 消息内容
-      parse_mode: 'Markdown', // 设置解析模式为 Markdown
+      text: startMsg, // 启动消息内容
+      parse_mode: 'Markdown', // 设置消息解析模式为 Markdown
       reply_markup: keyboard, // 设置按钮键盘
     });
   }
@@ -98,7 +98,7 @@ async function onMessage(message) { // 处理消息
       parse_mode: 'Markdown', // 设置解析模式为 Markdown
     });
   }
-  if (message.chat.id.toString() === ADMIN_UID) { // 如果消息是来自管理员
+  if (message.chat.id.toString() === ADMIN_UID) { // 如果消息来自管理员
     if (!message?.reply_to_message?.chat) { // 如果没有回复的消息
       return sendMessage({
         chat_id: ADMIN_UID, // 发送给管理员
