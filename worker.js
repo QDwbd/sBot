@@ -72,7 +72,9 @@ async function onMessage(message) {
       console.error('Error fetching start message:', error);
       startMsg = 'An error occurred while fetching the start message.';
     }
-    startMsg = startMsg.replace(/{{username}}/g, username).replace(/{{user_id}}/g, userId).replace(/{{user}}/g, user);
+    startMsg = startMsg.replace(/{{username}}/g, `\`` + username + `\``)
+                       .replace(/{{user_id}}/g, `\`` + userId + `\``)
+                       .replace(/{{user}}/g, user);
     let keyboard = {
       inline_keyboard: [
         [
