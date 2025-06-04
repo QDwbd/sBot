@@ -3,5 +3,5 @@
 your name:{{username}}
 your id:{{user_id}}
 your username:[{{user}}](https://t.me/{{user}})
-[小火箭配置](https://raw.githubusercontent.com/QDwbd/srule/refs/heads/main/s.conf)
+[小火箭配置](https://peizhi.qing666.tech/)
 [telegram中文](https://t.me/setlanguage/zhcncc)
