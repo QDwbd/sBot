@@ -17,7 +17,7 @@
     - 增加一个`ENV_BOT_SECRET`变量，数值为从步骤2中获得的secret
     - 增加一个`ENV_ADMIN_UID`变量，数值为从步骤3中获得的用户id
 7. 绑定kv数据库，创建一个Namespace Name为`sBot`的kv数据库，在setting -> variable中设置`KV Namespace Bindings`：sBot -> sBot
-8. 点击`Quick Edit`，复制[这个文件](./worker.js)到编辑器中
+8. 点击`Quick Edit`，复制[这个文件](./worker.js)到编辑器中保存
 9. 通过打开`https://xxx.workers.dev/registerWebhook`来注册websoket
 ```
 registerWebhook
@@ -29,7 +29,7 @@ registerWebhook
 - 用户回复`/block`, `/unblock`, `/checkblock`等命令会执行相关指令，******不会******回复到原消息发送者
 
 
-## ----------------------------------------------------------------------------------------------------------------------
+## 下面是另一个机器人部署方法-和上面不太相关----------------------------------------------------------------------------------------------------------------------
 
 
 ## 新机器人（群组话题单对单）
