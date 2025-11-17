@@ -65,31 +65,6 @@ async function onMessage(message) {
       text: '已清除所有数据。',
     });
   }
-  const isBlacklisted = await sBot.get(`blacklist-${userID}`, { type: 'json' });
-  if (isBlacklisted) {
-    await sendMessage({
-      chat_id: message.chat.id,
-      text: '你已被拉黑。',
-    });
-    return;
-  }
-  if (message.text === '/begin') {
-    return await handleStartCommand(message);
-  }
-  if (message.text && /配置文件|aimi配置/i.test(message.text)) {
-    return sendMessage({
-      chat_id: message.chat.id,
-      text: `[AiMi配置](https://raw.githubusercontent.com/QDwbd/srule/refs/heads/main/s.conf)`,
-      parse_mode: 'Markdown',
-    });
-  }
-  if (message.chat.type === 'private') {
-    await handlePrivateMessage(message);
-  } else if (message.chat.id === GROUP_CHAT_ID) {
-    if (message.from.id === ADMIN_UID && message.message_thread_id) {
-      await handleAdminMessageInTopic(message);
-    }
-  }
   if (message.chat.id === GROUP_CHAT_ID && message.message_thread_id && userID === ADMIN_UID && message.text) {
     const text = message.text.trim().toLowerCase();
     if (text === '/ban' || text === '/unban') {
@@ -119,6 +94,31 @@ async function onMessage(message) {
         });
       }
       return;
+    }
+  }
+  const isBlacklisted = await sBot.get(`blacklist-${userID}`, { type: 'json' });
+  if (isBlacklisted) {
+    await sendMessage({
+      chat_id: message.chat.id,
+      text: '你已被拉黑。',
+    });
+    return;
+  }
+  if (message.text === '/begin') {
+    return await handleStartCommand(message);
+  }
+  if (message.text && /配置文件|aimi配置/i.test(message.text)) {
+    return sendMessage({
+      chat_id: message.chat.id,
+      text: `[AiMi配置](https://raw.githubusercontent.com/QDwbd/srule/refs/heads/main/s.conf)`,
+      parse_mode: 'Markdown',
+    });
+  }
+  if (message.chat.type === 'private') {
+    await handlePrivateMessage(message);
+  } else if (message.chat.id === GROUP_CHAT_ID) {
+    if (message.from.id === ADMIN_UID && message.message_thread_id) {
+      await handleAdminMessageInTopic(message);
     }
   }
 }
@@ -230,7 +230,7 @@ async function handleAdminMessageInTopic(message) {
   if (!userID) return;
   await copyMessage({
     chat_id: userID,
-    from_chat_id: message.chat.id,
+    from_chat_id: GROUP_CHAT_ID,
     message_id: message.message_id,
   });
 }
