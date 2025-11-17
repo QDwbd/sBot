@@ -230,7 +230,7 @@ async function handleAdminMessageInTopic(message) {
   if (!userID) return;
   await copyMessage({
     chat_id: userID,
-    from_chat_id: GROUP_CHAT_ID,
+    from_chat_id: message.chat.id,
     message_id: message.message_id,
   });
 }
