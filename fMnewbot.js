@@ -93,11 +93,11 @@ async function onMessage(message) {
   if (isBlacklisted) {
     await sendMessage({
       chat_id: message.chat.id,
-      text: '您已被拉黑，无法使用此机器人服务。',
+      text: '你已被拉黑。',
     });
     return;
   }
-  if (message.text === '/start') {
+  if (message.text === '/begin') {
     return await handleStartCommand(message);
   }
   if (message.text && /配置文件|aimi配置/i.test(message.text)) {
