@@ -171,7 +171,7 @@ async function handlePrivateMessage(message) {
     if (!topicID) {
       await sendMessage({
         chat_id: userID,
-        text: '您还未发送 /start ，请先发送该命令以创建会话话题。',
+        text: '您还未发送 /begin ，请先发送该命令以创建会话话题。',
       });
       return;
     }
