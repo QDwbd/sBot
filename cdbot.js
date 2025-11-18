@@ -99,7 +99,7 @@ async function onMessage(message) {
     });
   }
   if (message.chat.id.toString() === ADMIN_UID) {
-    if (message.text === '/cd') {
+    if (message.text === '/clear') {
       await clearAllKVData();
       return sendMessage({
         chat_id: ADMIN_UID,
