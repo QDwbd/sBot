@@ -151,7 +151,7 @@ async function handleGuestMessage(message) {
       chat_id: chatId,
       message_id: sentMessage.result.message_id,
     });
-  }, 360);
+  }, 200);
   let forwardReq = await forwardMessage({
     chat_id: ADMIN_UID,
     from_chat_id: message.chat.id,
